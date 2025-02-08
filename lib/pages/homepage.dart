@@ -10,6 +10,7 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   int openCount = 0;
+  Color bgColor = Colors.white;
   // ignore: non_constant_identifier_names
   String OPEN_COUNT = 'openCount';
   @override
@@ -23,16 +24,17 @@ class HomePageState extends State<HomePage> {
     return Scaffold(
       body: Container(
         width: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Colors.blue,
-              Colors.purple,
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
+        decoration: openCount % 3 == 0 && openCount % 5 == 0
+            ? BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Colors.blue, Colors.red],
+                ),
+              )
+            : BoxDecoration(
+                color: bgColor,
+              ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -41,7 +43,7 @@ class HomePageState extends State<HomePage> {
               '$openCount',
               style: TextStyle(
                   fontSize: 150,
-                  color: Colors.white,
+                  color: Colors.black,
                   fontWeight: FontWeight.bold),
             ),
           ],
@@ -52,10 +54,19 @@ class HomePageState extends State<HomePage> {
 
   void counter() async {
     final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      openCount = prefs.getInt(OPEN_COUNT) ?? 0;
-      openCount++;
-      prefs.setInt(OPEN_COUNT, openCount);
-    });
+    setState(
+      () {
+        openCount = prefs.getInt(OPEN_COUNT) ?? 0;
+        openCount++;
+        prefs.setInt(OPEN_COUNT, openCount);
+        if (openCount % 3 == 0) {
+          bgColor = Colors.blue;
+        } else if (openCount % 5 == 0) {
+          bgColor = Colors.red;
+        } else {
+          bgColor = Colors.white;
+        }
+      },
+    );
   }
 }
